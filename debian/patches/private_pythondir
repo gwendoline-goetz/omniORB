@@ -1,0 +1,55 @@
+Description: Place omniidl python modules in a private directory
+ The omniidl code is not meant as importable code but just to make the
+ tool work.  Therefore it should live in /usr/lib/omniidl in Debian.
+ This also helps dh_python2 do the right thing.
+Forwarded: no
+Author: Floris Bruynooghe <flub@devork.be>
+Last-Update: 2011-07-21
+
+--- a/mk/beforeauto.mk.in
++++ b/mk/beforeauto.mk.in
+@@ -40,8 +40,8 @@
+ INSTALLINCDIR 	 := $(DESTDIR)@includedir@
+ INSTALLBINDIR 	 := $(DESTDIR)@bindir@
+ INSTALLLIBDIR 	 := $(DESTDIR)@libdir@
+-INSTALLPYTHONDIR := $(DESTDIR)@pythondir@
+-INSTALLPYEXECDIR := $(DESTDIR)@pyexecdir@
++INSTALLPYTHONDIR := $(DESTDIR)/usr/lib/omniidl
++INSTALLPYEXECDIR := $(DESTDIR)/usr/lib/omniidl
+ INSTALLIDLDIR    := $(DESTDIR)@datadir@/idl
+ 
+ #############################################################################
+--- a/src/tool/omniidl/python/scripts/omniidl.in
++++ b/src/tool/omniidl/python/scripts/omniidl.in
+@@ -45,8 +45,8 @@
+ pylibdir   = archlibdir = None
+ binarchdir = os.path.abspath(os.path.dirname(sys.argv[0]))
+ 
+-# Try a path based on the installation prefix
+-sppath = "@prefix@/lib/python" + sys.version[:3] + "/site-packages"
++# Try a path based on the installation prefix, customised for Debian
++sppath = "@prefix@/lib/omniidl"
+ 
+ if os.path.isdir(sppath):
+     sys.path.append(sppath)
+@@ -94,20 +94,6 @@
+         if os.path.isdir(archlibdir):
+             sys.path.insert(0, archlibdir)
+ 
+-# Last chance, try a path based on the installation prefixes
+-sys.path.append("@prefix@/lib/python" + sys.version[:3] + "/site-packages")
+-
+-paths = [ "@exec_prefix@/lib/python" + sys.version[:3] + "/site-packages",
+-          "@pythondir@",
+-          "@pyexecdir@" ]
+-
+-
+-# Autoconf insists on making our life difficult...
+-for path in paths:
+-    path = path.replace("${exec_prefix}", "@exec_prefix@")
+-    path = path.replace("${prefix}", "@prefix@")
+-    sys.path.append(path)
+-
+ try:
+     import _omniidl
+ except ImportError, msg:
