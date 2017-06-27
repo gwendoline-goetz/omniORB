@@ -9,19 +9,17 @@
 //    This file is part of the omniORB library
 //
 //    The omniORB library is free software; you can redistribute it and/or
-//    modify it under the terms of the GNU Library General Public
+//    modify it under the terms of the GNU Lesser General Public
 //    License as published by the Free Software Foundation; either
-//    version 2 of the License, or (at your option) any later version.
+//    version 2.1 of the License, or (at your option) any later version.
 //
 //    This library is distributed in the hope that it will be useful,
 //    but WITHOUT ANY WARRANTY; without even the implied warranty of
 //    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-//    Library General Public License for more details.
+//    Lesser General Public License for more details.
 //
-//    You should have received a copy of the GNU Library General Public
-//    License along with this library; if not, write to the Free
-//    Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  
-//    02111-1307, USA
+//    You should have received a copy of the GNU Lesser General Public
+//    License along with this library. If not, see http://www.gnu.org/licenses/
 //
 //
 // Description:
@@ -708,6 +706,20 @@ giopStream::errorOnReceive(int rc, const char* filename, CORBA::ULong lineno,
   pd_strand->state(giopStrand::DYING);
   if (buf) giopStream_Buffer::deleteBuffer(buf);
 
+  if (pd_strand->state() == giopStrand::DYING &&
+      pd_strand->isBiDir() && pd_strand->isClient()) {
+
+    if (omniORB::trace(30)) {
+      omniORB::logger l;
+      l << "Error on client receiving from bi-directional connection on strand "
+	<< (void*)pd_strand << ". Will scavenge it.\n";
+    }
+    {
+      omni_tracedmutex_lock sync(*omniTransportLock);
+      pd_strand->startIdleCounter();
+    }
+  }
+
   CommFailure::_raise(minor,(CORBA::CompletionStatus)completion(),retry,
 		      filename,lineno, message, pd_strand);
   // never reaches here.
@@ -741,7 +753,7 @@ giopStream::ensureSaneHeader(const char* filename, CORBA::ULong lineno,
   CORBA::ULong msz;
 
   // check for 8 byte alignment 
-  if (((long)hdr & 7) == 0)
+  if (((omni::ptr_arith_t)hdr & 7) == 0)
     msz = *(CORBA::ULong*)(hdr + 8);
   else
     memcpy(&msz, hdr + 8, sizeof(CORBA::ULong));
@@ -960,6 +972,7 @@ giopStream::inputChunk(CORBA::ULong maxsize)
 			"New message received in the middle of an existing "
 			"message", pd_strand);
     // never reaches here.
+    buf = 0; // avoid compiler warning
   }
   else if (pd_strand->spare) {
     buf = pd_strand->spare;
@@ -1138,6 +1151,20 @@ giopStream::errorOnSend(int rc, const char* filename, CORBA::ULong lineno,
   }
   else {
     pd_strand->state(giopStrand::DYING);
+  }
+
+  if (pd_strand->state() == giopStrand::DYING &&
+      pd_strand->isBiDir() && pd_strand->isClient()) {
+
+    if (omniORB::trace(30)) {
+      omniORB::logger l;
+      l << "Error on client sending to bi-directional connection on strand "
+	<< (void*)pd_strand << ". Will scavenge it.\n";
+    }
+    {
+      omni_tracedmutex_lock sync(*omniTransportLock);
+      pd_strand->startIdleCounter();
+    }
   }
 
   CommFailure::_raise(minor,(CORBA::CompletionStatus)completion(),retry,

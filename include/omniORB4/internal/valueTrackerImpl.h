@@ -8,19 +8,17 @@
 //    This file is part of the omniORB library
 //
 //    The omniORB library is free software; you can redistribute it and/or
-//    modify it under the terms of the GNU Library General Public
+//    modify it under the terms of the GNU Lesser General Public
 //    License as published by the Free Software Foundation; either
-//    version 2 of the License, or (at your option) any later version.
+//    version 2.1 of the License, or (at your option) any later version.
 //
 //    This library is distributed in the hope that it will be useful,
 //    but WITHOUT ANY WARRANTY; without even the implied warranty of
 //    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-//    Library General Public License for more details.
+//    Lesser General Public License for more details.
 //
-//    You should have received a copy of the GNU Library General Public
-//    License along with this library; if not, write to the Free
-//    Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
-//    02111-1307, USA
+//    You should have received a copy of the GNU Lesser General Public
+//    License along with this library. If not, see http://www.gnu.org/licenses/
 //
 //
 // Description:
@@ -87,12 +85,23 @@ public:
   // nested value away, but later receives an indirection to it.
 
 private:
+  void resizeTable();
+
+  inline void add()
+  {
+    if (++pd_table_count == pd_table_limit)
+      resizeTable();
+  }
+
   static _dyn_attr const CORBA::ULong PD_MAGIC; // "C+OV"
-  CORBA::ULong pd_magic;
+  CORBA::ULong       pd_magic;
 
   CORBA::ULong       pd_in_truncatable;
   OutputTableEntry** pd_table;
+  CORBA::ULong       pd_table_count;
   CORBA::ULong       pd_table_size;
+  CORBA::ULong       pd_table_limit;
+  CORBA::ULong       pd_table_next_idx;
 };
 
 class InputValueTracker : public ValueIndirectionTracker {
@@ -134,12 +143,23 @@ public:
   // As above for list of repoIds.
 
 private:
+  void resizeTable();
+
+  inline void add()
+  {
+    if (++pd_table_count == pd_table_limit)
+      resizeTable();
+  }
+
   static _dyn_attr const CORBA::ULong PD_MAGIC; // "C+IV"
-  CORBA::ULong pd_magic;
+  CORBA::ULong      pd_magic;
 
   CORBA::ULong      pd_in_truncatable;
   InputTableEntry** pd_table;
+  CORBA::ULong      pd_table_count;
   CORBA::ULong      pd_table_size;
+  CORBA::ULong      pd_table_limit;
+  CORBA::ULong      pd_table_next_idx;
 };
 
 

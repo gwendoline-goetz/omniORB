@@ -9,19 +9,17 @@
 //    This file is part of the omniORB library.
 //
 //    The omniORB library is free software; you can redistribute it and/or
-//    modify it under the terms of the GNU Library General Public
+//    modify it under the terms of the GNU Lesser General Public
 //    License as published by the Free Software Foundation; either
-//    version 2 of the License, or (at your option) any later version.
+//    version 2.1 of the License, or (at your option) any later version.
 //
 //    This library is distributed in the hope that it will be useful,
 //    but WITHOUT ANY WARRANTY; without even the implied warranty of
 //    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-//    Library General Public License for more details.
+//    Lesser General Public License for more details.
 //
-//    You should have received a copy of the GNU Library General Public
-//    License along with this library; if not, write to the Free
-//    Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  
-//    02111-1307, USA
+//    You should have received a copy of the GNU Lesser General Public
+//    License along with this library. If not, see http://www.gnu.org/licenses/
 //
 //
 // Description:
@@ -171,12 +169,14 @@ protected:
 
   inline T_seq &operator= (const T_seq &s)
   {
-    // Prevent copybuffer from copying any of the current sequence members
-    pd_len = 0;
+    if (&s != this) {
+      // Prevent copybuffer from copying any of the current sequence members
+      pd_len = 0;
 
-    length(s.pd_len);
-    for (unsigned long i=0; i < pd_len; i++) {
-      pd_buf[i] = s.pd_buf[i];
+      length(s.pd_len);
+      for (unsigned long i=0; i < pd_len; i++) {
+        pd_buf[i] = s.pd_buf[i];
+      }
     }
     return *this;
   }
@@ -285,7 +285,7 @@ public:
     return *this;
   }
 
-  static inline T* allocbuf(_CORBA_ULong nelems) {
+  static inline T* allocbuf(_CORBA_ULong /*nelems*/) {
     return Base_T_seq::allocbuf(max);
   }
 
@@ -1170,13 +1170,15 @@ protected:
 
   inline T_seq& operator= (const T_seq& s)
   {
-    // Prevent copybuffer from copying any of the current sequence members 
-    pd_len = 0;
+    if (&s != this) {
+      // Prevent copybuffer from copying any of the current sequence members 
+      pd_len = 0;
 
-    length(s.pd_len);
-    for (unsigned long i=0; i < pd_len; i++) {
-      for (_CORBA_ULong j=0; j < dimension; j++) {
-	*((T_elm*)(pd_buf[i]) + j) = *((T_elm*)(s.pd_buf[i]) + j);
+      length(s.pd_len);
+      for (unsigned long i=0; i < pd_len; i++) {
+        for (_CORBA_ULong j=0; j < dimension; j++) {
+          *((T_elm*)(pd_buf[i]) + j) = *((T_elm*)(s.pd_buf[i]) + j);
+        }
       }
     }
     return *this;
@@ -1290,7 +1292,7 @@ public:
 
   inline ~_CORBA_Bounded_Sequence_Array() {}
 
-  static inline T* allocbuf(_CORBA_ULong nelems) {
+  static inline T* allocbuf(_CORBA_ULong /*nelems*/) {
     return Base_T_seq::allocbuf(max);
   }
 
@@ -1989,26 +1991,28 @@ protected:
   }
 
   inline T_seq& operator= (const T_seq& s) {
-    _CORBA_ULong i;
+    if (&s != this) {
+      _CORBA_ULong i;
 
-    if (pd_rel) {
-      T* nil_ = T_Helper::_nil();
-      for (i=0; i < pd_len; i++) {
-	T_Helper::release(pd_buf[i]);
-	pd_buf[i] = nil_;
+      if (pd_rel) {
+        T* nil_ = T_Helper::_nil();
+        for (i=0; i < pd_len; i++) {
+          T_Helper::release(pd_buf[i]);
+          pd_buf[i] = nil_;
+        }
+        pd_len = 0;
+        length(s.pd_len);
+        for (i = 0; i < pd_len; i++) {
+          pd_buf[i] = s.pd_buf[i];
+          T_Helper::duplicate(pd_buf[i]);
+        }
       }
-      pd_len = 0;
-      length(s.pd_len);
-      for (i = 0; i < pd_len; i++) {
-	pd_buf[i] = s.pd_buf[i];
-	T_Helper::duplicate(pd_buf[i]);
-      }
-    }
-    else {
-      pd_len = 0;
-      length(s.pd_len);
-      for (i = 0; i < pd_len; i++) {
-	pd_buf[i] = s.pd_buf[i];
+      else {
+        pd_len = 0;
+        length(s.pd_len);
+        for (i = 0; i < pd_len; i++) {
+          pd_buf[i] = s.pd_buf[i];
+        }
       }
     }
     return *this;
@@ -2133,7 +2137,7 @@ public:
     return *this;
   }
 
-  static inline T** allocbuf(_CORBA_ULong nelems) {
+  static inline T** allocbuf(_CORBA_ULong /*nelems*/) {
     return Base_T_seq::allocbuf(max);
   }
 

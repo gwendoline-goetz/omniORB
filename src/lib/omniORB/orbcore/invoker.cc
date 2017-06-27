@@ -10,19 +10,17 @@
 //    This file is part of the omniORB library
 //
 //    The omniORB library is free software; you can redistribute it and/or
-//    modify it under the terms of the GNU Library General Public
+//    modify it under the terms of the GNU Lesser General Public
 //    License as published by the Free Software Foundation; either
-//    version 2 of the License, or (at your option) any later version.
+//    version 2.1 of the License, or (at your option) any later version.
 //
 //    This library is distributed in the hope that it will be useful,
 //    but WITHOUT ANY WARRANTY; without even the implied warranty of
 //    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-//    Library General Public License for more details.
+//    Lesser General Public License for more details.
 //
-//    You should have received a copy of the GNU Library General Public
-//    License along with this library; if not, write to the Free
-//    Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
-//    02111-1307, USA
+//    You should have received a copy of the GNU Lesser General Public
+//    License along with this library. If not, see http://www.gnu.org/licenses/
 //
 // Description:
 //	*** PROPRIETARY INTERFACE ***
@@ -103,6 +101,7 @@ public:
       pd_task(0),
       pd_next_idle(0), pd_prev_idle(0)
   {
+    pd_total_at_start = pd_invoker->workerStartLocked();
     start();
   }
 
@@ -118,12 +117,10 @@ public:
   }
 
   void run(void*) {
-    unsigned int total = pd_invoker->workerStart();
-
     if (omniORB::trace(10)) {
       omniORB::logger log;
       log << "AsyncInvoker: thread id " << pd_id
-          << " has started. Total threads = " << total << ".\n";
+          << " has started. Total threads = " << pd_total_at_start << ".\n";
     }
     omniAsyncWorkerInfo info(this);
     info.run();
@@ -165,6 +162,7 @@ private:
   omni_tracedmutex&    pd_lock;
   omni_tracedcondition pd_cond;
   int                  pd_id;
+  unsigned int         pd_total_at_start;
 
   omniAsyncPool*       pd_pool;
   omniTask*            pd_task;
@@ -192,7 +190,7 @@ public:
       pd_idle_threads(0)
   {}
 
-  virtual ~omniAsyncPool() {}
+  virtual ~omniAsyncPool() { }
 
   inline const char* purpose() { return pd_purpose; }
 

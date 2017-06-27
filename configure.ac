@@ -1,5 +1,5 @@
 dnl -*- M4 -*-
-AC_INIT(omniORB, 4.2.0, bugs@omniorb-support.com)
+AC_INIT(omniORB, 4.2.2, bugs@omniorb-support.com)
 
 AC_PREREQ(2.52)
 AC_CONFIG_SRCDIR(bin/scripts/omkdirhier)
@@ -36,6 +36,24 @@ AC_PROG_MAKE_SET
 AM_PATH_PYTHON
 
 AC_PATH_PROG(PKG_CONFIG, pkg-config, no)
+
+
+dnl ** Cross compilation
+
+if test "$cross_compiling" = yes; then
+  AC_PATH_PROG(OMNIIDL, omniidl, no)
+  if test "x$ac_cv_path_OMNIIDL" = "xno"; then
+    AC_MSG_ERROR(cannot find omniidl on the path)
+  fi
+
+  AC_PATH_PROG(OMKDEPEND, omkdepend, no)
+  if test "x$ac_cv_path_OMKDEPEND" = "xno"; then
+    AC_MSG_ERROR(cannot find omkdepend on the path)
+  fi
+fi
+
+AC_SUBST(CROSS_COMPILING, $cross_compiling)
+
 
 AC_LANG(C++)
 
@@ -185,6 +203,7 @@ os_v="0"
 
 case "$host" in
   *-*-linux-*)   plat_name="Linux";    plat_def="__linux__";    os_v="2";;
+  *-*-uclinux-*) plat_name="Linux";    plat_def="__linux__";    os_v="2";;
   *-*-cygwin*)   plat_name="Cygwin";   plat_def="__cygwin__";   os_v="1";;
   *-*-solaris*)  plat_name="SunOS";    plat_def="__sunos__";    os_v="5";;
   *-*-osf3*)     plat_name="OSF1";     plat_def="__osf1__";     os_v="3";;
