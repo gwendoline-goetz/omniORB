@@ -19,9 +19,7 @@
 #  General Public License for more details.
 #
 #  You should have received a copy of the GNU General Public License
-#  along with this program; if not, write to the Free Software
-#  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
-#  02111-1307, USA.
+#  along with this program.  If not, see http://www.gnu.org/licenses/
 
 """C++ templates for the SK.cc file"""
 
@@ -967,8 +965,10 @@ exception = """\
 
 @scoped_name@& @scoped_name@::operator=(const @scoped_name@& _s)
 {
-  ((::CORBA::UserException*) this)->operator=(_s);
-  @assign_op_body@
+  if (&_s != this) {
+    ((::CORBA::UserException*) this)->operator=(_s);
+    @assign_op_body@
+  }
   return *this;
 }
 
@@ -1094,10 +1094,12 @@ void
 @fqname@&
 @fqname@::operator=(const ::@fqname@& _s)
 {
-  pd_len = 0;
-  length(_s.pd_len);
-  for (unsigned long _i=0; _i < pd_len; _i++) {
-    pd_buf[_i] = _s.pd_buf[_i];
+  if (&_s != this) {
+    pd_len = 0;
+    length(_s.pd_len);
+    for (unsigned long _i=0; _i < pd_len; _i++) {
+      pd_buf[_i] = _s.pd_buf[_i];
+    }
   }
   return *this;
 }

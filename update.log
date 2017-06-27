@@ -1,3 +1,585 @@
+Thu 11 May 16:08:37 BST 2017
+============================
+
+- This is omniORB 4.2.2.
+
+
+Thu 11 May 14:51:36 BST 2017
+============================
+
+- Windows readme update.
+
+README.win32.txt
+
+
+Thu 11 May 14:01:08 BST 2017
+============================
+
+- Windows platform file updates.
+
+config/config.mk
+mk/platforms/x86_win32_vs_10.mk
+mk/platforms/x86_win32_vs_11.mk
+mk/platforms/x86_win32_vs_12.mk
+mk/platforms/x86_win32_vs_13.mk
+mk/platforms/x86_win32_vs_14.mk
+mk/platforms/x86_win32_vs_15.mk
+mk/platforms/x86_win32_vs_6.mk
+mk/platforms/x86_win32_vs_7.mk
+mk/platforms/x86_win32_vs_8.mk
+mk/platforms/x86_win32_vs_9.mk
+
+
+Thu 11 May 00:50:17 BST 2017
+============================
+
+- Updates for 4.2.2.
+
+README.FIRST.txt
+README.unix.txt
+ReleaseChecklist.txt
+ReleaseNotes.txt
+THIS_IS_OMNIORB_4_2_1
+THIS_IS_OMNIORB_4_2_2
+configure.ac
+configure
+contrib/RPMs/omniORB.spec
+contrib/RPMs/omniORB_new.spec
+doc/omniORB.pdf
+doc/omniORB/index.html
+doc/omniORB/omniORB.html
+doc/omniORB/omniORB001.html
+doc/omniORB/omniORB002.html
+doc/omniORB/omniORB003.html
+doc/omniORB/omniORB004.html
+doc/omniORB/omniORB005.html
+doc/omniORB/omniORB006.html
+doc/omniORB/omniORB007.html
+doc/omniORB/omniORB008.html
+doc/omniORB/omniORB009.html
+doc/omniORB/omniORB010.html
+doc/omniORB/omniORB011.html
+doc/omniORB/omniORB012.html
+doc/omniORB/omniORB013.html
+doc/omniORB/omniORB014.html
+doc/omniORB/omniORB015.html
+doc/omniORB/omniORB016.html
+doc/tex/cover.tex
+doc/tex/ode.tex
+doc/tex/omniORB.tex
+doc/tex/omniURLDefs.hva
+doc/tex/omniURLDefs.sty
+doc/tex/omniidl.tex
+mk/version.mk
+sample.cfg
+update.log
+
+
+Thu 30 Mar 14:51:58 BST 2017
+============================
+
+- Miscellaneous minor fixes based on Coverity testing.
+
+include/omniORB4/minorCode.h
+src/appl/utils/genior/genior.cc
+src/lib/omniORB/dynamic/tcParser.cc
+src/lib/omniORB/dynamic/typecode.cc
+src/lib/omniORB/orbcore/codeSets.cc
+src/lib/omniORB/orbcore/cs-16bit.cc
+src/lib/omniORB/orbcore/giopServer.cc
+src/lib/omniORB/orbcore/ior.cc
+src/lib/omniORB/orbcore/omniObjRef.cc
+src/tool/omniidl/cxx/idldump.cc
+src/tool/omniidl/cxx/idlpython.cc
+
+
+Fri  3 Mar 22:44:16 GMT 2017
+============================
+
+- More warning suppression.
+
+src/tool/omkdepend/parse.c
+src/tool/omkdepend/pr.c
+src/tool/omniidl/cxx/cccp/cccp.c
+src/tool/omniidl/cxx/cccp/cexp.c
+src/tool/omniidl/cxx/cccp/cexp.y.source
+
+
+Fri  3 Mar 22:21:43 GMT 2017
+============================
+
+- Correctly duplicate POA reference in tie class. Thanks Daniel Krügler.
+
+src/lib/omniORB/python/omniidl_be/cxx/header/template.py
+src/lib/omniORB/python3/omniidl_be/cxx/header/template.py
+
+
+Mon 20 Feb 22:43:15 GMT 2017 dgrisby
+====================================
+
+- Update GPL / LGPL headers.
+
+<many files>
+
+
+Wed 15 Feb 23:39:57 GMT 2017 dgrisby
+====================================
+
+- Rely on OpenSSL to check file existence. Clearer error reporting.
+
+src/lib/omniORB/orbcore/ssl/sslAddress.cc
+src/lib/omniORB/orbcore/ssl/sslConnection.cc
+src/lib/omniORB/orbcore/ssl/sslContext.cc
+src/lib/omniORB/orbcore/ssl/sslTransportImpl.cc
+
+
+Wed 15 Feb 23:32:12 GMT 2017 dgrisby
+====================================
+
+- Correctly set exit status in init script.
+
+etc/init.d/omniNames.in
+
+- Suppress lots of warnings.
+
+aclocal.m4
+include/omniORB4/internal/poacurrentimpl.h
+src/lib/omniORB/dynamic/valueType.cc
+src/lib/omniORB/orbcore/giopImpl12.cc
+src/lib/omniORB/orbcore/giopStream.cc
+src/tool/omkdepend/cppsetup.c
+src/tool/omkdepend/def.h
+src/tool/omkdepend/ifparser.c
+src/tool/omkdepend/include.c
+src/tool/omkdepend/main.c
+src/tool/omkdepend/parse.c
+src/tool/omkdepend/pr.c
+src/tool/omniidl/cxx/cccp/cccp.c
+src/tool/omniidl/cxx/cccp/cexp.c
+src/tool/omniidl/cxx/cccp/cexp.y.source
+src/tool/omniidl/cxx/cccp/cexp.y
+src/tool/omniidl/cxx/cccp/config.h
+src/tool/omniidl/cxx/dir.mk
+src/tool/omniidl/cxx/idl.ll.source
+src/tool/omniidl/cxx/idl.ll
+src/tool/omniidl/cxx/idl.yy.source
+src/tool/omniidl/cxx/idl.yy
+src/tool/omniidl/cxx/idlast.cc
+src/tool/omniidl/cxx/idldump.cc
+src/tool/omniidl/cxx/lex.yy.cc
+src/tool/omniidl/cxx/y.tab.cc
+src/tool/omniidl/cxx/y.tab.h
+
+
+Mon  6 Feb 18:34:17 GMT 2017 dgrisby
+====================================
+
+- Log transition between thread per connection and thread pool.
+
+src/lib/omniORB/orbcore/giopServer.cc
+
+- Locking errors in bidirectional connections.
+
+src/lib/omniORB/orbcore/giopImpl12.cc
+src/lib/omniORB/orbcore/giopStrand.cc
+src/lib/omniORB/orbcore/giopStream.cc
+
+
+Thu  5 Jan 11:27:32 GMT 2017 dgrisby
+====================================
+
+- Support changed API in OpenSSL 1.1.0.
+
+src/lib/omniORB/orbcore/ssl/sslConnection.cc
+src/lib/omniORB/orbcore/ssl/sslContext.cc
+
+
+Mon 10 Oct 23:56:55 BST 2016 dgrisby
+====================================
+
+- New defaultCharCodeSet and defaultWCharCodeSet configuration
+  parameters; always use correct exceptions when codesets are missing.
+
+include/omniORB4/internal/codeSetUtil.h
+include/omniORB4/internal/orbParameters.h
+src/lib/omniORB/orbcore/codeSets.cc
+
+
+Tue Sep 27 17:52:53 BST 2016 dgrisby
+====================================
+
+- Unnecessary lock leading to deadlock. Thanks Michael Teske.
+
+src/lib/omniORB/orbcore/poa.cc
+
+
+Fri 16 Sep 23:38:25 BST 2016 dgrisby
+====================================
+
+- Avoid compiler warnings about unused parameters. Thanks David Ward
+  for the request.
+
+include/omniORB4/CORBA_sysdep.h
+include/omniORB4/omniORB.h
+include/omniORB4/seqTemplatedecls.h
+include/omniORB4/valueTemplatedecls.h
+src/lib/omniORB/python/omniidl_be/cxx/call.py
+src/lib/omniORB/python3/omniidl_be/cxx/call.py
+
+- Support building on platforms with autoconf but inadequate platform defines.
+
+include/omniconfig.h.in
+src/lib/omnithread/posix.cc
+
+- Support for building on systems with Trusted Path Execution. Thanks
+  Michael Orlitzky.
+
+mk/beforeauto.mk.in
+mk/beforedir.mk
+
+
+Mon 25 Apr 09:45:51 BST 2016 dgrisby
+====================================
+
+- No longer a need for -bind_at_load on Mac OS X.
+
+mk/beforeauto.mk.in
+
+
+Sun 24 Apr 22:27:55 BST 2016 dgrisby
+====================================
+
+- Missing omniDynamic library in omniZiopDynamic link.
+
+src/lib/omniORB/ziopdynamic/dir.mk
+
+- Support cross compilation.
+
+acinclude.m4
+configure.ac
+configure
+mk/beforeauto.mk.in
+
+
+Thu 14 Apr 11:17:11 BST 2016 dgrisby
+====================================
+
+- Avoid race in DII deferred calls that throw exceptions.
+
+include/omniORB4/callDescriptor.h
+include/omniORB4/internal/request.h
+src/lib/omniORB/dynamic/request.cc
+
+
+Thu Apr  7 10:17:37 BST 2016 dgrisby
+====================================
+
+- More repository id version fixing.
+
+src/lib/omniORB/orbcore/poastubs.cc
+
+- More union fixing.
+
+src/lib/omniORB/python/omniidl_be/cxx/header/defs.py
+src/lib/omniORB/python/omniidl_be/cxx/header/template.py
+src/lib/omniORB/python3/omniidl_be/cxx/header/defs.py
+src/lib/omniORB/python3/omniidl_be/cxx/header/template.py
+
+
+Wed Mar 30 11:36:49 BST 2016 dgrisby
+====================================
+
+- Fix incorrect IPv6 address validation logic.
+
+src/lib/omniORB/orbcore/libcWrapper.cc
+
+- Fix leak in union _default().
+
+src/lib/omniORB/python/omniidl_be/cxx/header/template.py
+src/lib/omniORB/python3/omniidl_be/cxx/header/template.py
+
+
+Thu Feb 25 17:38:07 GMT 2016 dgrisby
+====================================
+
+- Compile error with lock tracing enabled.
+
+include/omniORB4/ami.h
+
+- Correct version number in POA repository ids.
+
+include/omniORB4/internal/poaimpl.h
+src/lib/omniORB/orbcore/poastubs.cc
+
+
+Mon  4 Jan 10:50:42 GMT 2016 dgrisby
+====================================
+
+- Clear value tracker on user exceptions. Thanks Michal Strnad for the
+  bug report.
+
+src/lib/omniORB/orbcore/GIOP_S.cc
+
+
+Thu 29 Oct 12:47:34 GMT 2015 dgrisby
+====================================
+
+- Add VS platforms to config.mk.
+
+config.mk
+
+
+Thu 29 Oct 11:38:46 GMT 2015 dgrisby
+====================================
+
+- Add missing VS platform files.
+
+mk/platforms/x86_win32_vs_11.mk
+mk/platforms/x86_win32_vs_12.mk
+mk/platforms/x86_win32_vs_13.mk
+mk/platforms/x86_win32_vs_14.mk
+
+
+Mon 28 Sep 12:14:23 BST 2015 dgrisby
+====================================
+
+- This is omniORB 4.2.1.
+
+README.FIRST.txt
+ReleaseChecklist.txt
+ReleaseNotes.txt
+THIS_IS_OMNIORB_4_2_0
+THIS_IS_OMNIORB_4_2_1
+configure.ac
+configure
+contrib/RPMs/omniORB.spec
+contrib/RPMs/omniORB_new.spec
+mk/version.mk
+
+
+Mon 28 Sep 12:01:29 BST 2015 dgrisby
+====================================
+
+- Updated Windows readme.
+
+README.win32.txt
+
+- Missing space after macro.
+
+src/lib/omniORB/orbcore/corbaOrb.cc
+
+- Avoid exceptions in destructors.
+
+src/lib/omniORB/dynamic/context.cc
+src/lib/omniORB/orbcore/cdrValueChunkStream.cc
+src/lib/omniORB/orbcore/giopStream.cc
+src/lib/omnithread/nt.cc
+src/lib/omnithread/posix.cc
+
+
+Mon Jun 29 09:28:53 BST 2015 dgrisby
+====================================
+
+- Use SSL_pending() to avoid incorrect read blocking.
+
+include/omniORB4/sslContext.h
+src/lib/omniORB/orbcore/ssl/sslConnection.cc
+
+
+Mon  8 Jun 12:41:56 BST 2015 dgrisby
+====================================
+
+- Use longer DH parameters; disable use of SSLv3.
+
+src/lib/omniORB/orbcore/ssl/sslContext.cc
+
+
+Mon  8 Jun 12:36:27 BST 2015 dgrisby
+====================================
+
+- Properly handle SystemExceptions thrown in deferred synchronous DII.
+
+src/lib/omniORB/dynamic/request.cc
+
+- Handle POLLHUP as if it was POLLIN.
+
+src/lib/omniORB/orbcore/SocketCollection.cc
+
+
+Wed  6 May 14:54:14 BST 2015 dgrisby
+====================================
+
+- Add uclinux to platform list.
+
+configure.ac
+configure
+
+
+Wed May  6 12:22:23 BST 2015 dgrisby
+====================================
+
+- Avoid C++ 11 warnings about missing spaces before macros.
+
+src/lib/omniORB/orbcore/corbaOrb.cc
+
+
+Wed May  6 12:18:00 BST 2015 dgrisby
+====================================
+
+- Avoid annoying Mac compiler warning about perfectly safe use of strcpy().
+
+include/omniORB4/stringtypes.h
+
+
+Wed May  6 12:07:16 BST 2015 dgrisby
+====================================
+
+- Avoid issues in use of uninitialised unions. Thanks Michael Teske.
+
+src/lib/omniORB/python/omniidl_be/cxx/header/template.py
+
+- Missing constructor in _var type for fixed length struct. Thanks
+  Daniel Krügler.
+
+include/omniORB4/templatedecls.h
+
+
+Fri Apr 10 17:42:58 BST 2015 dgrisby
+====================================
+
+- Locking bug in rope matching; misclassification of connection as
+  supporting ZIOP.
+
+src/lib/omniORB/orbcore/giopRope.cc
+
+
+Mon 23 Feb 11:37:55 GMT 2015 dgrisby
+====================================
+
+- Race condition if application code changes log function. Thanks Peter Klotz.
+
+src/lib/omniORB/orbcore/logIOstream.cc
+
+
+Tue Nov 25 12:42:40 GMT 2014 dgrisby
+====================================
+
+- Build patches from Peter Klotz.
+
+include/omniORB4/internal/GNUmakefile.in
+include/omniORB4/tracedthread.h
+src/lib/dir.mk
+
+
+Tue Nov 25 12:34:02 GMT 2014 dgrisby
+====================================
+
+- Self-assignment safety.
+
+include/omniORB4/CORBA_Any_vartypes.h
+include/omniORB4/seqTemplatedecls.h
+src/lib/omniORB/python/omniidl_be/cxx/header/template.py
+src/lib/omniORB/python/omniidl_be/cxx/skel/template.py
+src/lib/omniORB/python3/omniidl_be/cxx/header/template.py
+src/lib/omniORB/python3/omniidl_be/cxx/skel/template.py
+
+
+Tue Nov 25 11:21:17 GMT 2014 dgrisby
+====================================
+
+- Avoid zero timeout.
+
+include/omniORB4/internal/tcpSocket.h
+
+
+Thu Oct 23 09:45:43 BST 2014 dgrisby
+====================================
+
+- Windows Python 3 changes.
+
+mk/python.mk
+src/tool/omniidl/cxx/dir.mk
+src/tool/omniidl/cxx/idlpython.cc
+
+
+Wed Oct 22 23:49:04 BST 2014 dgrisby
+====================================
+
+- Immediately set strands dying in _NP_disconnect.
+
+src/lib/omniORB/orbcore/giopRope.cc
+
+
+Mon Sep 15 11:42:45 BST 2014 dgrisby
+====================================
+
+- Fix race between thread startup and orb destroy.
+
+include/omniORB4/omniAsyncInvoker.h
+src/lib/omniORB/orbcore/invoker.cc
+
+
+Wed Sep  3 17:20:06 BST 2014 dgrisby
+====================================
+
+- Keep peer details even if name is empty.
+
+src/lib/omniORB/orbcore/ssl/sslConnection.cc
+
+
+Wed Sep  3 10:32:46 BST 2014 dgrisby
+====================================
+
+- Add operation() to clientOpenConnection interceptor; ensure SSL peer
+  details are always set.
+
+include/omniORB4/omniInterceptors.h
+src/lib/omniORB/orbcore/interceptors.cc
+src/lib/omniORB/orbcore/ssl/sslConnection.cc
+src/lib/omniORB/orbcore/ssl/sslConnection.h
+
+
+Tue Sep  2 12:02:48 BST 2014 dgrisby
+====================================
+
+- Expand valuetracker hash table on demand.
+
+include/omniORB4/internal/valueTrackerImpl.h
+src/lib/omniORB/dynamic/valueTracker.cc
+
+- Optionally return more details about SSL peer.
+
+include/omniORB4/sslContext.h
+src/lib/omniORB/orbcore/ssl/sslConnection.cc
+src/lib/omniORB/orbcore/ssl/sslConnection.h
+src/lib/omniORB/orbcore/ssl/sslContext.cc
+
+- Operation accessor in interceptors.
+
+include/omniORB4/omniInterceptors.h
+src/lib/omniORB/orbcore/interceptors.cc
+
+
+Fri Aug  8 18:17:22 BST 2014 dgrisby
+====================================
+
+- Option to set SSL CA path.
+
+include/omniORB4/sslContext.h
+sample.cfg
+src/lib/omniORB/orbcore/ssl/sslContext.cc
+src/lib/omniORB/orbcore/ssl/sslTransportImpl.cc
+
+
+Wed Jul 23 10:07:17 BST 2014 dgrisby
+====================================
+
+- Improved Python 3 support.
+
+mk/python.mk
+src/tool/omniidl/cxx/dir.mk
+
+
 Mon Apr 28 17:48:32 BST 2014 dgrisby
 ====================================
 

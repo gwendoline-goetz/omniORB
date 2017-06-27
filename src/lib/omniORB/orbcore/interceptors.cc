@@ -9,19 +9,17 @@
 //    This file is part of the omniORB library
 //
 //    The omniORB library is free software; you can redistribute it and/or
-//    modify it under the terms of the GNU Library General Public
+//    modify it under the terms of the GNU Lesser General Public
 //    License as published by the Free Software Foundation; either
-//    version 2 of the License, or (at your option) any later version.
+//    version 2.1 of the License, or (at your option) any later version.
 //
 //    This library is distributed in the hope that it will be useful,
 //    but WITHOUT ANY WARRANTY; without even the implied warranty of
 //    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-//    Library General Public License for more details.
+//    Lesser General Public License for more details.
 //
-//    You should have received a copy of the GNU Library General Public
-//    License along with this library; if not, write to the Free
-//    Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  
-//    02111-1307, USA
+//    You should have received a copy of the GNU Lesser General Public
+//    License along with this library. If not, see http://www.gnu.org/licenses/
 //
 //
 // Description:
@@ -151,6 +149,25 @@ void omniInterceptors::invokeLocalCall_T::remove(
 {
   omniCallDescriptor::removeInterceptor(f);
 }
+
+
+//
+// Convenience methods to access operation name
+
+#define OPERATION_ACCESSOR(interceptor, g) \
+\
+const char* \
+omniInterceptors::interceptor##_T::info_T::operation() \
+{ \
+  return g.operation(); \
+}
+
+OPERATION_ACCESSOR(clientOpenConnection, giop_c)
+OPERATION_ACCESSOR(clientSendRequest,    giop_c)
+OPERATION_ACCESSOR(clientReceiveReply,   giop_c)
+OPERATION_ACCESSOR(serverReceiveRequest, giop_s)
+OPERATION_ACCESSOR(serverSendReply,      giop_s)
+OPERATION_ACCESSOR(serverSendException,  giop_s)
 
 
 //

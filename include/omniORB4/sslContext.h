@@ -9,19 +9,17 @@
 //    This file is part of the omniORB library
 //
 //    The omniORB library is free software; you can redistribute it and/or
-//    modify it under the terms of the GNU Library General Public
+//    modify it under the terms of the GNU Lesser General Public
 //    License as published by the Free Software Foundation; either
-//    version 2 of the License, or (at your option) any later version.
+//    version 2.1 of the License, or (at your option) any later version.
 //
 //    This library is distributed in the hope that it will be useful,
 //    but WITHOUT ANY WARRANTY; without even the implied warranty of
 //    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-//    Library General Public License for more details.
+//    Lesser General Public License for more details.
 //
-//    You should have received a copy of the GNU Library General Public
-//    License along with this library; if not, write to the Free
-//    Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  
-//    02111-1307, USA
+//    You should have received a copy of the GNU Lesser General Public
+//    License along with this library. If not, see http://www.gnu.org/licenses/
 //
 //
 // Description:
@@ -60,9 +58,10 @@ class sslContext {
 
   SSL_CTX* get_SSL_CTX() const { return pd_ctx; }
   
-  // These three parameters must be set or else the default way to
+  // These parameters must be set or else the default way to
   // initialise a sslContext singleton will not be used.
   static _core_attr const char* certificate_authority_file; // In PEM format
+  static _core_attr const char* certificate_authority_path; // Path
   static _core_attr const char* key_file;                   // In PEM format
   static _core_attr const char* key_file_password;
 
@@ -75,6 +74,28 @@ class sslContext {
   static _core_attr void      (*info_callback)(const SSL *s,
 					       int where, int ret);
 
+  // If this parameter is false (the default), interceptor
+  // peerdetails() calls treturn an X509*. If set true, the calls
+  // return a pointer to an sslContext::PeerDetails object.
+  static _core_attr CORBA::Boolean full_peerdetails;
+
+  class PeerDetails {
+  public:
+    inline PeerDetails(SSL* s, X509* c, CORBA::Boolean v)
+      : pd_ssl(s), pd_cert(c), pd_verified(v) {}
+
+    ~PeerDetails();
+
+    inline SSL*           ssl()      { return pd_ssl; }
+    inline X509*          cert()     { return pd_cert; }
+    inline CORBA::Boolean verified() { return pd_verified; }
+
+  private:
+    SSL*           pd_ssl;
+    X509*          pd_cert;
+    CORBA::Boolean pd_verified;
+  };
+
   // sslContext singleton object.
   static _core_attr sslContext* singleton;
 
@@ -85,8 +106,8 @@ class sslContext {
   // Default to return SSLv23_method().
 
   virtual void set_supported_versions(); 
-  // Default to SSL_CTX_set_options(ssL_ctx, SSL_OP_NO_SSLv2); That is
-  // only accept SSL version 3 or TLS version 1.
+  // Default to SSL_CTX_set_options(ssl_ctx, SSL_OP_NO_SSLv2|SSL_OP_NO_SSLv3);
+  // That is only accept TLS.
 
   virtual void set_CA();
   // Default to read the certificates of the Certificate Authorities in the 
