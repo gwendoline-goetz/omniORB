@@ -9,19 +9,17 @@
 //    This file is part of the omniORB library
 //
 //    The omniORB library is free software; you can redistribute it and/or
-//    modify it under the terms of the GNU Library General Public
+//    modify it under the terms of the GNU Lesser General Public
 //    License as published by the Free Software Foundation; either
-//    version 2 of the License, or (at your option) any later version.
+//    version 2.1 of the License, or (at your option) any later version.
 //
 //    This library is distributed in the hope that it will be useful,
 //    but WITHOUT ANY WARRANTY; without even the implied warranty of
 //    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-//    Library General Public License for more details.
+//    Lesser General Public License for more details.
 //
-//    You should have received a copy of the GNU Library General Public
-//    License along with this library; if not, write to the Free
-//    Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
-//    02111-1307, USA
+//    You should have received a copy of the GNU Lesser General Public
+//    License along with this library. If not, see http://www.gnu.org/licenses/
 //
 //
 // Description:
@@ -159,10 +157,8 @@ giopRope::acquireClient(const omniIOR*      ior,
     }
     else {
       pd_filtering = 1;
-      {
-        omni_tracedmutex_unlock ul(*omniTransportLock);
-        filterAndSortAddressList();
-      }
+      filterAndSortAddressList();
+
       pd_filtering      = 0;
       pd_addrs_filtered = 1;
 
@@ -508,6 +504,7 @@ giopRope::disconnect()
               << s->connection->peeraddress() << "\n";
         }
         s->connection->Shutdown();
+        s->state(giopStrand::DYING);
       }
     }
   }
@@ -669,6 +666,10 @@ giopRope::filterAndSortAddressList()
     const char*  host = ga->host();
 
     if (host && !LibcWrapper::isipaddr(host)) {
+
+      // Unlock omniTransportLock while resolving the name.
+      omni_tracedmutex_unlock ul(*omniTransportLock);
+
       if (omniORB::trace(25)) {
         omniORB::logger log;
         log << "Resolve name '" << host << "'...\n";
@@ -751,7 +752,7 @@ giopRope::filterAndSortAddressList()
           flags |= GIOPSTRAND_BIDIR;
 	}
         else if (strcmp(actions[i],"ziop") == 0) {
-          flags |= GIOPSTRAND_COMPRESSION;
+          flags |= pd_ior_flags & GIOPSTRAND_COMPRESSION;
         }
       }
       if (matched) {

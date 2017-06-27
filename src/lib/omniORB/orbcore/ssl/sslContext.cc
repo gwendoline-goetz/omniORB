@@ -9,19 +9,17 @@
 //    This file is part of the omniORB library
 //
 //    The omniORB library is free software; you can redistribute it and/or
-//    modify it under the terms of the GNU Library General Public
+//    modify it under the terms of the GNU Lesser General Public
 //    License as published by the Free Software Foundation; either
-//    version 2 of the License, or (at your option) any later version.
+//    version 2.1 of the License, or (at your option) any later version.
 //
 //    This library is distributed in the hope that it will be useful,
 //    but WITHOUT ANY WARRANTY; without even the implied warranty of
 //    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-//    Library General Public License for more details.
+//    Lesser General Public License for more details.
 //
-//    You should have received a copy of the GNU Library General Public
-//    License along with this library; if not, write to the Free
-//    Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
-//    02111-1307, USA
+//    You should have received a copy of the GNU Lesser General Public
+//    License along with this library. If not, see http://www.gnu.org/licenses/
 //
 //
 // Description:
@@ -36,7 +34,6 @@
 #else
 #include <process.h>
 #endif
-#include <sys/stat.h>
 #include <omniORB4/minorCode.h>
 #include <omniORB4/sslContext.h>
 #include <exceptiondefs.h>
@@ -51,15 +48,17 @@ OMNI_USING_NAMESPACE(omni)
 
 static void report_error();
 
-const char* sslContext::certificate_authority_file = 0;
-const char* sslContext::key_file = 0;
-const char* sslContext::key_file_password = 0;
-int         sslContext::verify_mode = (SSL_VERIFY_PEER |
-				       SSL_VERIFY_FAIL_IF_NO_PEER_CERT);
-int       (*sslContext::verify_callback)(int,X509_STORE_CTX *) = 0;
-void      (*sslContext::info_callback)(const SSL *s, int where, int ret) = 0;
+const char*    sslContext::certificate_authority_file = 0;
+const char*    sslContext::certificate_authority_path = 0;
+const char*    sslContext::key_file = 0;
+const char*    sslContext::key_file_password = 0;
+int            sslContext::verify_mode = (SSL_VERIFY_PEER |
+                                          SSL_VERIFY_FAIL_IF_NO_PEER_CERT);
+int          (*sslContext::verify_callback)(int,X509_STORE_CTX *) = 0;
+void         (*sslContext::info_callback)(const SSL *s, int where, int ret) = 0;
+CORBA::Boolean sslContext::full_peerdetails = 0;
 
-sslContext* sslContext::singleton = 0;
+sslContext*    sslContext::singleton = 0;
 
 
 /////////////////////////////////////////////////////////////////////////
@@ -136,6 +135,12 @@ sslContext::~sslContext() {
 }
 
 /////////////////////////////////////////////////////////////////////////
+sslContext::PeerDetails::~PeerDetails() {
+  if (pd_cert)
+    X509_free(pd_cert);
+}
+
+/////////////////////////////////////////////////////////////////////////
 SSL_METHOD*
 sslContext::set_method() {
   return OMNI_CONST_CAST(SSL_METHOD*, SSLv23_method());
@@ -144,52 +149,54 @@ sslContext::set_method() {
 /////////////////////////////////////////////////////////////////////////
 void
 sslContext::set_supported_versions() {
-  SSL_CTX_set_options(pd_ctx, SSL_OP_NO_SSLv2);
+  SSL_CTX_set_options(pd_ctx, SSL_OP_NO_SSLv2 | SSL_OP_NO_SSLv3);
 }
 
 /////////////////////////////////////////////////////////////////////////
 void
 sslContext::set_CA() {
 
-  {
-    struct stat buf;
-    if (!pd_cafile || stat(pd_cafile,&buf) < 0) {
-      if (omniORB::trace(1)) {
-	omniORB::logger log;
-	log << "Error: sslContext CA file is not set "
-	    << "or cannot be found\n";
-      }
-      OMNIORB_THROW(INITIALIZE,INITIALIZE_TransportError,
-		    CORBA::COMPLETED_NO);
-    }
-  }
+  if (!(SSL_CTX_load_verify_locations(pd_ctx, pd_cafile,
+                                      certificate_authority_path))) {
+    if (omniORB::trace(1)) {
+      omniORB::logger log;
+      log << "Failed to set CA";
 
-  if (!(SSL_CTX_load_verify_locations(pd_ctx,pd_cafile,0))) {
+      if (pd_cafile)
+        log << " file '" << pd_cafile << "'";
+
+      if (certificate_authority_path)
+        log << " path '" << certificate_authority_path << "'";
+
+      log << ".\n";
+    }
+      
     report_error();
     OMNIORB_THROW(INITIALIZE,INITIALIZE_TransportError,CORBA::COMPLETED_NO);
   }
 
   // We no longer set the verify depth to 1, to use the default of 9.
   //  SSL_CTX_set_verify_depth(pd_ctx,1);
-
 }
 
 /////////////////////////////////////////////////////////////////////////
 void
 sslContext::set_certificate() {
   {
-    struct stat buf;
-    if (!pd_keyfile || stat(pd_keyfile,&buf) < 0) {
+    if (!pd_keyfile) {
       if (omniORB::trace(5)) {
 	omniORB::logger log;
-	log << "sslContext certificate file is not set "
-	    << "or cannot be found\n";
+	log << "sslContext certificate file is not set.\n";
       }
       return;
     }
   }
 
   if(!(SSL_CTX_use_certificate_chain_file(pd_ctx, pd_keyfile))) {
+    if (omniORB::trace(1)) {
+      omniORB::logger log;
+      log << "Failed to use certificate file '" << pd_keyfile << "'.\n";
+    }
     report_error();
     OMNIORB_THROW(INITIALIZE,INITIALIZE_TransportError,CORBA::COMPLETED_NO);
   }
@@ -283,25 +290,48 @@ sslContext::set_DH() {
     OMNIORB_THROW(INITIALIZE,INITIALIZE_TransportError,CORBA::COMPLETED_NO);
   }
 
-  unsigned char dh512_p[] = {
-    0xDA,0x58,0x3C,0x16,0xD9,0x85,0x22,0x89,0xD0,0xE4,0xAF,0x75,
-    0x6F,0x4C,0xCA,0x92,0xDD,0x4B,0xE5,0x33,0xB8,0x04,0xFB,0x0F,
-    0xED,0x94,0xEF,0x9C,0x8A,0x44,0x03,0xED,0x57,0x46,0x50,0xD3,
-    0x69,0x99,0xDB,0x29,0xD7,0x76,0x27,0x6B,0xA2,0xD3,0xD4,0x12,
-    0xE2,0x18,0xF4,0xDD,0x1E,0x08,0x4C,0xF6,0xD8,0x00,0x3E,0x7C,
-    0x47,0x74,0xE8,0x33
+  static unsigned char dh2048_p[]={
+    0xD5,0xB3,0xFA,0xA4,0xD2,0x01,0xB3,0x20,0x56,0x8A,0x57,0xB6,
+    0xFA,0xCF,0x5B,0xEA,0x44,0xD6,0xBD,0xB2,0x09,0x2A,0x82,0x81,
+    0x6E,0x5E,0x60,0x7C,0xBB,0x20,0x2C,0xFE,0x2F,0x99,0x28,0x12,
+    0xCC,0xAA,0x90,0xC5,0x76,0x53,0xFC,0xA4,0xC6,0x82,0x03,0xDE,
+    0x32,0xB2,0xA2,0xD5,0xA8,0xBC,0xDE,0x0D,0xFF,0xA6,0xC7,0xA2,
+    0xD3,0x40,0x56,0x2E,0x5C,0x30,0x91,0x1B,0xC3,0xA9,0x8D,0x3C,
+    0xE5,0xAC,0x12,0xED,0xEF,0x50,0xD1,0xB7,0x13,0x4C,0x4B,0xA6,
+    0x6D,0x99,0x3E,0x59,0x83,0xAD,0x5E,0x22,0xDF,0x8A,0xB3,0xFD,
+    0x06,0x51,0xDC,0xAE,0xD7,0x18,0xBE,0x26,0x6C,0x91,0xF3,0x24,
+    0x22,0x27,0x63,0x79,0x04,0x2F,0x44,0x85,0x30,0xF1,0x32,0x96,
+    0x65,0x5F,0x43,0x00,0x7B,0x7E,0x72,0x3F,0xF8,0x8F,0x56,0xFA,
+    0xFE,0xA2,0x2B,0xBA,0x93,0x13,0x4C,0x84,0xB4,0x0F,0x97,0x80,
+    0xFE,0xBE,0xC8,0xE8,0xB0,0x0E,0x96,0xA8,0xEA,0x76,0xD8,0x38,
+    0x01,0x49,0xF1,0x7B,0xAE,0xC4,0x05,0xF3,0xC2,0x70,0xBC,0x01,
+    0x8C,0xD6,0x19,0x8F,0xF5,0x29,0x6A,0xE9,0x02,0x15,0x22,0x10,
+    0x7E,0x46,0x9D,0xD2,0x6F,0xED,0xCE,0xDC,0xE1,0xA1,0x35,0x2A,
+    0xD8,0x77,0x02,0x22,0xCC,0xA0,0x68,0x46,0x28,0xA5,0x3D,0xE6,
+    0xF2,0x95,0x31,0xE6,0x27,0xB0,0xB2,0xEA,0x62,0x66,0xBB,0xCD,
+    0xB7,0xAA,0xDE,0xB8,0x52,0x70,0x7A,0x74,0x0E,0x11,0x26,0x0A,
+    0x27,0x07,0x49,0x8C,0xE5,0xF3,0xED,0xCD,0x98,0xB6,0xE2,0x96,
+    0x8E,0xCF,0x96,0x4A,0x1D,0xB9,0x50,0x17,0x48,0x16,0x2D,0x53,
+    0x3E,0x39,0xA4,0x53,
+  };
+  static unsigned char dh2048_g[]={
+    0x02,
   };
 
-  unsigned char dh512_g[] = {
-    0x02
-  };
-
-  dh->p = BN_bin2bn(dh512_p, sizeof(dh512_p), 0);
-  dh->g = BN_bin2bn(dh512_g, sizeof(dh512_g), 0);
-  if( !dh->p || !dh->g) {
+  BIGNUM* p = BN_bin2bn(dh2048_p, sizeof(dh2048_p), 0);
+  BIGNUM* g = BN_bin2bn(dh2048_g, sizeof(dh2048_g), 0);
+  
+  if (!p || !g) {
     OMNIORB_THROW(INITIALIZE,INITIALIZE_TransportError,CORBA::COMPLETED_NO);
   }
 
+#if OPENSSL_VERSION_NUMBER < 0x10100000L
+  dh->p = p;
+  dh->g = g;
+#else
+  DH_set0_pqg(dh, p, 0, g);
+#endif
+  
   SSL_CTX_set_tmp_dh(pd_ctx, dh);
   DH_free(dh);
 }
@@ -389,7 +419,6 @@ static void report_error() {
     char buf[128];
     ERR_error_string_n(ERR_get_error(),buf,128);
     omniORB::logger log;
-    log << "sslContext.cc : " << (const char*) buf << "\n";
+    log << "OpenSSL: " << (const char*) buf << "\n";
   }
 }
-
