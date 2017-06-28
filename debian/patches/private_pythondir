@@ -4,7 +4,7 @@ Description: Place omniidl python modules in a private directory
  This also helps dh_python2 do the right thing.
 Forwarded: no
 Author: Floris Bruynooghe <flub@devork.be>
-Last-Update: 2011-07-21
+Last-Update: 2017-06-28
 
 --- a/mk/beforeauto.mk.in
 +++ b/mk/beforeauto.mk.in
@@ -18,10 +18,10 @@ Last-Update: 2011-07-21
 +INSTALLPYEXECDIR := $(DESTDIR)/usr/lib/omniidl
  INSTALLIDLDIR    := $(DESTDIR)@datadir@/idl
  
- #############################################################################
+ 
 --- a/src/tool/omniidl/python/scripts/omniidl.in
 +++ b/src/tool/omniidl/python/scripts/omniidl.in
-@@ -45,8 +45,8 @@
+@@ -43,8 +43,8 @@
  pylibdir   = archlibdir = None
  binarchdir = os.path.abspath(os.path.dirname(sys.argv[0]))
  
@@ -32,7 +32,7 @@ Last-Update: 2011-07-21
  
  if os.path.isdir(sppath):
      sys.path.append(sppath)
-@@ -94,20 +94,6 @@
+@@ -92,20 +92,6 @@
          if os.path.isdir(archlibdir):
              sys.path.insert(0, archlibdir)
  

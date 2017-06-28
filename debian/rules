@@ -55,7 +55,7 @@ clean:
 install: build
 	dh_testdir
 	dh_testroot
-	dh_clean -k
+	dh_prep
 	$(MAKE) -C build install DESTDIR=$(CURDIR)/debian/tmp
 	-find debian/tmp -name "*.pyc" -exec rm {} \;
 	dh_install --sourcedir=debian/tmp --list-missing
@@ -96,9 +96,9 @@ binary-arch: build install
 	dh_link -a
 	dh_compress -a
 	dh_fixperms -a
-	dh_makeshlibs -plibomnithread4 -V 'libomnithread4 (>= 4.2.0)'
-	dh_makeshlibs -plibomniorb4-2 -V 'libomniorb4-2 (>= 4.2.0)'
-	dh_makeshlibs -plibcos4-2 -V 'libcos4-2 (>= 4.2.0)'
+	dh_makeshlibs -plibomnithread4 -V 'libomnithread4 (>= 4.2.2)'
+	dh_makeshlibs -plibomniorb4-2 -V 'libomniorb4-2 (>= 4.2.2)'
+	dh_makeshlibs -plibcos4-2 -V 'libcos4-2 (>= 4.2.2)'
 	dh_python2 -pomniidl
 	dh_installdeb -a
 	dh_shlibdeps -a

@@ -1,3 +1,9 @@
+omniorb-dfsg (4.2.2-1) UNRELEASED; urgency=medium
+
+  * Non-maintainer upload.
+
+ -- Philippe Goetz <philippe.goetz@siemens.com>  Tue, 27 Jun 2017 18:25:00 +0200
+
 omniorb-dfsg (4.2.0-1) experimental; urgency=low
 
   [ Floris Bruynooghe ]

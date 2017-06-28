@@ -4,11 +4,24 @@ Description: Avoid forked code in the build system
  can be easily replicated using standard OS and compiler programs.
 Forwarded: http://www.omniorb-support.com/pipermail/omniorb-list/2002-October/022062.html
 Author: Bastian Blank <waldi@debian.org>
-Last-Update: 2010-08-08
+Last-Update: 2017-06-28
 
 --- a/mk/beforeauto.mk.in
 +++ b/mk/beforeauto.mk.in
-@@ -681,17 +681,16 @@
+@@ -68,12 +68,10 @@
+     TOOLBINDIR = $(TOP)/$(BINDIR)
+ endif
+ 
+-OMKDEPEND        = $(TOOLBINDIR)/omkdepend
+ OMNIORB_IDL_ONLY = $(TOOLBINDIR)/omniidl -bcxx
+ 
+ else
+ 
+-OMKDEPEND        = @OMKDEPEND@
+ OMNIORB_IDL_ONLY = @OMNIIDL@ -bcxx
+ 
+ endif
+@@ -708,7 +706,7 @@
  CC              = @CC@
  CXX             = @CXX@
  RANLIB		= @RANLIB@
@@ -17,9 +30,8 @@ Last-Update: 2010-08-08
  INSTLIBFLAGS	= -m 0644
  INSTEXEFLAGS	= -m 0755
  CP		= cp
- MV		= mv -f
+@@ -716,8 +714,8 @@
  CPP		= @CPP@
--OMKDEPEND	= $(TOOLBINDIR)/omkdepend
  RMDIRHIER	= $(RM) -rf
  
 -CXXMAKEDEPEND   = $(OMKDEPEND) -D__cplusplus
@@ -29,7 +41,7 @@ Last-Update: 2010-08-08
  
  
  #
-@@ -756,8 +755,6 @@
+@@ -786,8 +784,6 @@
  #
  
  ifdef Compiler_GCC

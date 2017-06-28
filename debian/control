@@ -3,8 +3,8 @@ Section: devel
 Priority: optional
 Maintainer: Debian CORBA Team <pkg-corba-devel@lists.alioth.debian.org>
 Uploaders: Floris Bruynooghe <flub@devork.be>, Thomas Girard <thomas.g.girard@free.fr>
-Build-Depends: debhelper (>= 6.0.0), python-dev (>= 2.6.6-3~), libssl-dev, autotools-dev, pkg-config, dh-python, dh-autoreconf
-Standards-Version: 3.9.6
+Build-Depends: debhelper (>= 6.0.0), python-dev (>= 2.6.6-3~), libssl-dev, autotools-dev, pkg-config, dh-python, dh-autoreconf, zlib1g-dev
+Standards-Version: 3.9.8
 Vcs-Svn: svn://svn.debian.org/svn/pkg-corba/trunk/omniorb
 Vcs-Browser: http://svn.debian.org/wsvn/pkg-corba/trunk/omniorb
 Homepage: http://omniorb.sourceforge.net
@@ -33,7 +33,7 @@ Description: omniORB CORBA services idl files
 
 Package: omniorb-nameserver
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}
+Depends: ${shlibs:Depends}, ${misc:Depends}, lsb-base (>= 3.0-6)
 Description: omniORB naming service
  omniORB is a freely available Common Object Request Broker
  Architecture (CORBA) 2.6 compliant object request broker (ORB)

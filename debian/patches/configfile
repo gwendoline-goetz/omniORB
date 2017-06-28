@@ -7,7 +7,7 @@ Last-Update: 2010-08-08
 
 --- a/sample.cfg
 +++ b/sample.cfg
-@@ -374,7 +374,7 @@
+@@ -394,7 +394,7 @@
  #   A call to resolve_initial_references("MyService") will return the object
  #   reference denoted by `corbaloc::myhost.example.com/MyService'.
  #
